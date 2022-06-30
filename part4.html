@@ -1,0 +1,519 @@
+<!doctype html> 
+<html lang="en"> 
+<head> 
+    <meta charset="UTF-8" />
+    <title>Making your first Phaser 3 Game - Part 4</title>
+    <script src="//cdn.jsdelivr.net/npm/phaser@3.11.0/dist/phaser.js"></script>
+    <style type="text/css">
+        body {
+            margin: 0;
+        }
+    </style>
+</head>
+<body>
+
+<script type="text/javascript">
+
+    var config = {
+        type: Phaser.AUTO,
+        width: 1000,
+        height: 650,
+        physics: {
+            default: 'arcade',
+            arcade: {
+                gravity: { y: 300 },
+                debug: false
+            }
+        },
+        scene: {
+            preload: preload,
+            create: create,
+            update: update
+        }
+    };
+
+    var platforms;
+    var player;
+    var kaktus1;
+    var kaktus2;
+    var wassertropfen;
+    var cursors;
+    var gameOver = false;
+
+    var game = new Phaser.Game(config);
+    
+    function preload ()
+    {
+
+        this.load.image('bg', 'assets/neu.png');
+        this.load.image('ground', 'assets/platform.png');
+        this.load.image('linksaussen', 'assets/Linksaussen.png');
+        this.load.image('linksunten', 'assets/Linksunten.png');
+        this.load.image('mitteoben', 'assets/Mitteoben.png');
+        this.load.image('zwischending', 'assets/Zwischending.png');
+        this.load.image('rechtsoben', 'assets/Rechtsoben.png');
+        this.load.image('rechtsaussen', 'assets/Rechtsaussen.png');
+        this.load.image('kaktus1', 'assets/kaktus1.PNG');
+        this.load.image('kaktus2', 'assets/kaktus2.PNG');
+        this.load.image('tür', 'assets/tür.png');
+        this.load.image('wasser', 'assets/wn.PNG');
+        let fuchs = this.load.spritesheet('dude', 'assets/dude.png', { frameWidth: 32, frameHeight: 48 });
+    }
+
+    function create () {
+        this.cameras.main.setBounds(0,0,3604,1001); //doppelt vom eigentlichem
+        this.physics.world.bounds.width = 3604;
+        this.physics.world.bounds.height = 1001;
+
+        this.add.image(1802,500, 'bg').setScale(1); //Hälfte von camera
+        this.add.image(2800,923, 'tür').setScale(0.07);
+
+        //PLATFORMEN
+        platforms = this.physics.add.staticGroup();
+
+        platforms.create(30, 649, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(30, 706, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(30, 763, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(30, 820, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(30, 877, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(30, 934, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(30, 991, 'linksunten').setScale(0.1).refreshBody();
+
+        platforms.create(87, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(87, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(87, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(87, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(87, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(87, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(87, 991, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(144, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(144, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(144, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(144, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(144, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(144, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(144, 991, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(201, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(201, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(201, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(201, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(201, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(201, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(201, 991, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(258, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(258, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(258, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(258, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(258, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(258, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(258, 991, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(315, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(315, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(315, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(315, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(315, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(315, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(315, 991, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(372, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(372, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(372, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(372, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(372, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(372, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(372, 991, 'zwischending').setScale(0.1).refreshBody();
+
+
+        platforms.create(429, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(429, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(429, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(429, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(429, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(429, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(429, 991, 'zwischending').setScale(0.1).refreshBody();
+
+
+        platforms.create(486, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(486, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(486, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(486, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(486, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(486, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(486, 991, 'zwischending').setScale(0.1).refreshBody();
+
+
+        platforms.create(543, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(543, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(543, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(543, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(543, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(543, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(543, 991, 'zwischending').setScale(0.1).refreshBody();
+
+
+        platforms.create(600, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(600, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(600, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(600, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(600, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(600, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(600, 991, 'zwischending').setScale(0.1).refreshBody();
+
+
+        platforms.create(657, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(657, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(657, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(657, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(657, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(657, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(657, 991, 'zwischending').setScale(0.1).refreshBody();
+
+
+        platforms.create(714, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(714, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(714, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(714, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(714, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(714, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(714, 991, 'zwischending').setScale(0.1).refreshBody();
+
+
+        platforms.create(771, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(771, 706, 'zwischending').setScale(0.1).refreshBody();
+
+
+        platforms.create(828, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(828, 706, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(885, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(885, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(885, 820, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(942, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(942, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(942, 820, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(999, 649, 'rechtsoben').setScale(0.1).refreshBody();
+        platforms.create(999, 706, 'rechtsaussen').setScale(0.1).refreshBody();
+        platforms.create(999, 763, 'rechtsaussen').setScale(0.1).refreshBody();
+        platforms.create(999, 820, 'rechtsaussen').setScale(0.1).refreshBody();
+
+        platforms.create(201, 399, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(258, 399, 'mitteoben').setScale(0.1).refreshBody();
+
+        //oben
+        platforms.create(429, 342, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(486, 342, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(543, 342, 'rechtsoben').setScale(0.1).refreshBody();
+
+        platforms.create(315, 399, 'rechtsoben').setScale(0.1).refreshBody();
+        platforms.create(543, 342, 'rechtsoben').setScale(0.1).refreshBody();
+
+        platforms.create(1646, 592, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(1703, 592, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1760, 592, 'rechtsoben').setScale(0.1).refreshBody();
+
+        platforms.create(1646, 421, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1760, 307, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1646, 193, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1760, 79, 'mitteoben').setScale(0.1).refreshBody();
+
+        platforms.create(771, 250, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(828, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(885, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(942, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(999, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1056, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1113, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1170, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1227, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1284, 250, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1341, 250, 'rechtsoben').setScale(0.1).refreshBody();
+
+
+        //nach höhle
+        platforms.create(1227, 934, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(1284, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1284, 877, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(1341, 934, 'rechtsaussen').setScale(0.1).refreshBody()
+        platforms.create(1341, 877, 'rechtsoben').setScale(0.1).refreshBody();
+
+        platforms.create(1455, 763, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(1512, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1569, 763, 'rechtsoben').setScale(0.1).refreshBody();
+
+        platforms.create(1854, 763, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(1911, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(1968, 763, 'rechtsoben').setScale(0.1).refreshBody();
+
+        platforms.create(2253, 649, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(2310, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2367, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2424, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2481, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2538, 649, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2595, 649, 'rechtsoben').setScale(0.1).refreshBody();
+
+        //Boden
+        platforms.create(771, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(828, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(885, 991, 'zwischending').setScale(0.1).refreshBody();
+        //platforms.create(942, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(999, 991, 'zwischending').setScale(0.1).refreshBody();
+        //platforms.create(1056, 991, 'zwischending').setScale(0.1).refreshBody();
+        //platforms.create(1113, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1170, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1227, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1284, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1341, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1398, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1455, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1512, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1569, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1626, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1683, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1740, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1797, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1854, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1911, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(1968, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2025, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2082, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2139, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2196, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2253, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2310, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2367, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2424, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2481, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2538, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2595, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2652, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2709, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2766, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2823, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2880, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2937, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2994, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3051, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3108, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3165, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3222, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3279, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3336, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3393, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3450, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3507, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3564, 991, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3621, 991, 'zwischending').setScale(0.1).refreshBody();
+
+        //Hinten senkrecht
+        platforms.create(3564, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3564, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3564, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3564, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3564, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3564, 649, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3564, 592, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3564, 535, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(3621, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3621, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3621, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3621, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3621, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3621, 649, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3621, 592, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3621, 535, 'zwischending').setScale(0.1).refreshBody();
+
+        platforms.create(2709, 934, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2709, 877, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2709, 820, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2709, 763, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2709, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2709, 649, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2709, 592, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2709, 535, 'mitteoben').setScale(0.1).refreshBody();
+
+        //Hinten waagerecht
+        platforms.create(2766, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2823, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2880, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2937, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2994, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3051, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3108, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3165, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3222, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3279, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3336, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3393, 763, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3450, 763, 'rechtsoben').setScale(0.1).refreshBody();
+
+        //Blöcke obenmitte hinten
+        platforms.create(2823, 592, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(2880, 592, 'rechtsoben').setScale(0.1).refreshBody();
+        platforms.create(2823, 649, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(2880, 649, 'rechtsaussen').setScale(0.1).refreshBody();
+
+        platforms.create(2994, 592, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(2994, 649, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(2994, 706, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(3051, 592, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3051, 649, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3051, 706, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3108, 592, 'rechtsoben').setScale(0.1).refreshBody();
+        platforms.create(3108, 649, 'rechtsaussen').setScale(0.1).refreshBody();
+        platforms.create(3108, 706, 'rechtsaussen').setScale(0.1).refreshBody();
+
+        platforms.create(3222, 592, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(3279, 592, 'rechtsoben').setScale(0.1).refreshBody();
+        platforms.create(3222, 649, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(3279, 649, 'rechtsaussen').setScale(0.1).refreshBody();
+
+        //block hinten unten
+        platforms.create(2994, 877, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(3051, 877, 'rechtsoben').setScale(0.1).refreshBody();
+        platforms.create(2994, 934, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(3051, 934, 'rechtsaussen').setScale(0.1).refreshBody();
+
+        //blöcke oben hinten
+        platforms.create(2823, 364, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(2823, 421, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(2880, 364, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2880, 421, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2937, 364, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(2937, 421, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(2994, 364, 'rechtsoben').setScale(0.1).refreshBody();
+        platforms.create(2994, 421, 'rechtsaussen').setScale(0.1).refreshBody();
+
+        platforms.create(3108, 364, 'linksaussen').setScale(0.1).refreshBody();
+        platforms.create(3108, 421, 'linksunten').setScale(0.1).refreshBody();
+        platforms.create(3165, 364, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3165, 421, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3222, 364, 'mitteoben').setScale(0.1).refreshBody();
+        platforms.create(3222, 421, 'zwischending').setScale(0.1).refreshBody();
+        platforms.create(3279, 364, 'rechtsoben').setScale(0.1).refreshBody();
+        platforms.create(3279, 421, 'rechtsaussen').setScale(0.1).refreshBody();
+
+        //KAKTEEN
+        kakteen = this.physics.add.staticGroup();
+
+        kakteen.create(457,278,'kaktus2').setScale(0.4).refreshBody();
+        kakteen.create(940,962,'kaktus1').setScale(0.4).refreshBody();
+        kakteen.create(1090,960,'kaktus2').setScale(0.5).refreshBody();
+        kakteen.create(1402,922,'kaktus1').setScale(0.4).refreshBody();
+        kakteen.create(1720,918,'kaktus2').setScale(0.5).refreshBody();
+        kakteen.create(2120,918,'kaktus2').setScale(0.5).refreshBody();
+        kakteen.create(2766,695,'kaktus1').setScale(0.4).refreshBody();
+        kakteen.create(2938,695,'kaktus1').setScale(0.4).refreshBody();
+        kakteen.create(3165,695,'kaktus1').setScale(0.4).refreshBody();
+        kakteen.create(2940,924,'kaktus1').setScale(0.4).refreshBody();
+        kakteen.create(3500,924,'kaktus1').setScale(0.4).refreshBody();
+
+
+        //WASSERTROPFEN
+        wassertropfen = this.physics.add.staticGroup();
+
+        wassertropfen.create(315,345,'wasser').setScale(0.1).refreshBody();
+        wassertropfen.create(258,345,'wasser').setScale(0.1).refreshBody();
+        wassertropfen.create(201,345,'wasser').setScale(0.1).refreshBody();
+
+        wassertropfen.create(942,763,'wasser').setScale(0.1).refreshBody();
+        wassertropfen.create(3051,344,'wasser').setScale(0.1).refreshBody();
+        wassertropfen.create(1703,540,'wasser').setScale(0.1).refreshBody();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        player = this.physics.add.sprite(50, 300, 'dude');
+        player.setBounce(0.2);
+        player.setCollideWorldBounds(true);
+        this.cameras.main.startFollow(player);
+
+        this.anims.create({
+            key: 'left',
+            frames: this.anims.generateFrameNumbers('dude', { start: 0, end: 3 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        this.anims.create({
+            key: 'turn',
+            frames: [ { key: 'dude', frame: 4 } ],
+            frameRate: 20
+        });
+
+        this.anims.create({
+            key: 'right',
+            frames: this.anims.generateFrameNumbers('dude', { start: 5, end: 8 }),
+            frameRate: 10,
+            repeat: -1
+        });
+
+        cursors = this.input.keyboard.createCursorKeys();
+
+        this.physics.add.collider(player, platforms);
+
+    }
+
+    function update () {
+
+        if (gameOver) {
+            return;
+        }
+        if (cursors.left.isDown) {
+            player.setVelocityX(-160);
+            player.anims.play('left', true);
+        } else if (cursors.right.isDown) {
+            player.setVelocityX(160);
+            player.anims.play('right', true);
+        } else {
+            player.setVelocityX(0);
+            player.anims.play('turn');
+        }
+        if (cursors.up.isDown && player.body.touching.down) {
+            player.setVelocityY(-330);
+
+        }
+    }
+
+
+    /*function collectStar (player, wassertropfen) {
+        wassertropfen.disableBody(true, true);
+
+        //  Add and update the score
+        score += 10;
+        scoreText.setText('Durst: ' + score);
+
+        if (wassertropfen.countActive(true) === 0) {
+            //  A new batch of stars to collect
+            stars.children.iterate(function (child) {
+
+                child.enableBody(true, child.x, 0, true, true);
+
+            });
+        }
+
+    }*/
+
+
+
+</script>
+
+</body>
+</html>
